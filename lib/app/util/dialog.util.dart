@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Messege {
+class Message {
   Future<void> dialogBuilder(BuildContext context, String title, String msg) {
     return showDialog<void>(
       context: context,

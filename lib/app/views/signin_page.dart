@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:workout_app/app/entities/access_token_entity.dart';
-import 'package:workout_app/app/repositories/user_repository.dart';
 import 'package:workout_app/app/util/dialog.util.dart';
-import '../entities/signup_user_entity.dart';
+import 'package:workout_app/app/views/home_person_page.dart';
+import '../component/costum_text_form_field.dart';
+import 'package:string_validator/string_validator.dart' as stringValidator;
+import '../entities/loading_data_entity.dart';
 import '../services/signin_service.dart';
 import '../util/costumPadding.dart';
-import 'home_page.dart';
 
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key});
@@ -15,11 +16,15 @@ class SigninPage extends StatefulWidget {
 }
 
 class _SigninPageState extends State<SigninPage> {
-  CostumPadding costumPadding = new CostumPadding();
-  Messege messege = Messege();
+  final _keyForm = GlobalKey<FormState>();
   SigninService signinService = SigninService();
-  String password = "";
-  String emailOrUsername = "";
+
+  late String email;
+  late String password;
+
+  CostumPadding costumPadding = CostumPadding();
+
+  Message message = Message();
 
   @override
   Widget build(BuildContext context) {
@@ -31,91 +36,102 @@ class _SigninPageState extends State<SigninPage> {
           ],
         ),
         body: SingleChildScrollView(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+          child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            key: _keyForm,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(20),
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 180,
-                      height: 180,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image:
-                                  AssetImage("assets/images/logo-forma.png"))),
-                    ),
-                    costumPadding.padding(20),
-                    TextField(
-                      onChanged: (text) {
-                        emailOrUsername = text;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: "Email ou Usuário",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    costumPadding.padding(10),
-                    TextField(
-                      onChanged: (text) {
-                        password = text;
-                      },
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          labelText: "Senha", border: OutlineInputBorder()),
-                    ),
-                    costumPadding.padding(5),
-                    TextButton(
-                      onPressed: () {
-                        //forgot password screen
-                      },
-                      child: const Text(
-                        'Esqueceu sua Senha?',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                    ),
-                    costumPadding.padding(5),
-                    Container(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            AccessToken accessToken = await signinService
-                                .signinUser(emailOrUsername, password);
-                            if (accessToken.token.isNotEmpty) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          HomePage(token: accessToken.token)));
-                            } else {
-                              messege.dialogBuilder(
-                                  context, "Alerta", "Aluno não encontrado!");
-                            }
-                          },
-                          child: Text("Acessar")),
-                    ),
-                    costumPadding.padding(5),
-                    Row(
-                      children: <Widget>[
-                        const Text('Não possui conta, ainda?'),
-                        TextButton(
-                          child: const Text(
-                            'Cadastrar',
-                            style: TextStyle(fontSize: 10),
+                children: [
+                  Container(
+                    width: 180,
+                    height: 180,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: AssetImage(
+                                "assets/images/logo_mais_forma.png"))),
+                  ),
+                  costumPadding.padding(15),
+                  CostomTextFormField(
+                    label: "Email:",
+                    iconTextField: Icons.mail,
+                    obscureText: false,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "O campo email está vazio.";
+                      }
+                      if (!stringValidator.isEmail(value)) {
+                        return "Verifique se email foi digitado corretamente.";
+                      }
+                    },
+                    onSaved: (value) => {email = value!},
+                  ),
+                  costumPadding.padding(15),
+                  CostomTextFormField(
+                    label: "Senha:",
+                    iconTextField: Icons.lock,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "O campo senha está vazio.";
+                      }
+                    },
+                    onSaved: (value) => {password = value!},
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 100,
+                    child: Wrap(
+                      spacing: 10,
+                      children: [
+                        Center(
+                          child: TextButton(
+                            onPressed: () {
+                              //forgot password screen
+                            },
+                            child: const Text(
+                              'Esqueceu sua Senha?',
+                              style: TextStyle(fontSize: 10),
+                            ),
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pushNamed("/signup-auth");
-                          },
-                        )
+                        ),
+                        Container(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                              onPressed: () async {
+                                if (_keyForm.currentState!.validate()) {
+                                  _keyForm.currentState!.save();
+                                  var response = await signinService.signinUser(
+                                      email, password);
+                                  AccessToken accessToken = response;
+                                  if (accessToken.token.length > 100) {
+                                    LoadingData loadingData =
+                                        await signinService
+                                            .getDataHome(accessToken.token);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => HomePersonPage(
+                                                  token: accessToken.token,
+                                                  loadingData: loadingData,
+                                                )));
+                                    _keyForm.currentState!.reset();
+                                  } else {
+                                    message.dialogBuilder(context, "Alerta",
+                                        "Email ou Senha inválida!");
+                                  }
+                                }
+                              },
+                              label: Text("Enviar"),
+                              icon: Icon(Icons.send)),
+                        ),
                       ],
-                      mainAxisAlignment: MainAxisAlignment.center,
                     ),
-                  ]),
+                  ),
+                ],
+              ),
             ),
           ),
         ));

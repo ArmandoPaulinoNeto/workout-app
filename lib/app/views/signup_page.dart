@@ -76,19 +76,18 @@ class SignupPageState extends State<SignupPage> {
                           onPressed: () async {
                             User user = await userRepository.saveUser(
                                 username, email, password, widget.token);
-                            Messege messege = Messege();
-
+                            Message message = Message();
                             if (user.id != "") {
-                              messege.dialogBuilder(context, "Mensagem",
+                              message.dialogBuilder(context, "Mensagem",
                                   "O usuário foi salvo com sucesso!");
 
-                              Navigator.push(
+                              Navigator.pop(
                                   context,
                                   MaterialPageRoute(
                                       builder: (_) =>
                                           HomePage(token: widget.token)));
                             } else {
-                              messege.dialogBuilder(context, "Mensagem",
+                              message.dialogBuilder(context, "Mensagem",
                                   "Falha ao salva o usuário!");
                             }
                           },
