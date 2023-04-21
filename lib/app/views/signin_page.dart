@@ -67,6 +67,7 @@ class _SigninPageState extends State<SigninPage> {
                       }
                     },
                     onSaved: (value) => {email = value!},
+                    readOnly: false,
                   ),
                   costumPadding.padding(15),
                   CostomTextFormField(
@@ -79,6 +80,7 @@ class _SigninPageState extends State<SigninPage> {
                       }
                     },
                     onSaved: (value) => {password = value!},
+                    readOnly: false,
                   ),
                   SizedBox(
                     width: double.infinity,
@@ -92,19 +94,26 @@ class _SigninPageState extends State<SigninPage> {
                               //forgot password screen
                             },
                             child: const Text(
-                              'Esqueceu sua Senha?',
-                              style: TextStyle(fontSize: 10),
+                              'Esqueceu sua senha?',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color.fromARGB(255, 47, 79, 79),
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
                         Container(
                           width: double.infinity,
                           child: ElevatedButton.icon(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Color.fromARGB(255, 0, 100, 0)),
+                              ),
                               onPressed: () async {
                                 if (_keyForm.currentState!.validate()) {
                                   _keyForm.currentState!.save();
-                                  var response = await signinService.signinUser(
-                                      email, password);
+                                  var response = await signinService
+                                      .signinPerson(email, password);
                                   AccessToken accessToken = response;
                                   if (accessToken.token.length > 100) {
                                     LoadingData loadingData =
@@ -124,8 +133,8 @@ class _SigninPageState extends State<SigninPage> {
                                   }
                                 }
                               },
-                              label: Text("Enviar"),
-                              icon: Icon(Icons.send)),
+                              label: Text("Entrar"),
+                              icon: Icon(Icons.login_outlined)),
                         ),
                       ],
                     ),

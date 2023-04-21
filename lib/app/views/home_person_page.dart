@@ -7,9 +7,9 @@ import '../component/costum_list_titles.dart';
 import '../controlles/app_controller.dart';
 import '../entities/loading_data_entity.dart';
 import '../util/dialog.util.dart';
+import 'administrator/find_execise_page.dart';
 import 'administrator/find_teacher_page.dart';
-import 'exercise/signup_exercise.dart';
-import 'teacher/find_exercises_page.dart';
+import 'administrator/signup_exercise_page.dart';
 
 class HomePersonPage extends StatefulWidget {
   String token;
@@ -26,60 +26,75 @@ class HomePersonPage extends StatefulWidget {
 class HomePersonPageState extends State<HomePersonPage> {
   Message message = Message();
 
-  String signinUser = "João Ferreira";
-  String pupils = "100";
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
             children: [
               CostomListTitles(
                 title: 'Buscar Aluno',
                 actionOntap: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => FindPupilPage()))
+                  Navigator.pop(context),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => FindPupilPage(
+                                token: widget.token,
+                              )))
                 },
-                iconTextField: Icons.image_search_outlined,
+                iconTextField: Icons.person_search_outlined,
               ),
               CostomListTitles(
                 title: "Cadastrar Aluno",
                 actionOntap: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => SignupPupilPage()))
+                  Navigator.pop(context),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => SignupPupilPage(
+                                token: widget.token,
+                              )))
                 },
                 iconTextField: Icons.book_outlined,
               ),
               CostomListTitles(
                 title: "Buscar Exercício",
                 actionOntap: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => FindExercisesPage()))
+                  Navigator.pop(context),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => FindExercisePage(
+                                token: widget.token,
+                              )))
                 },
-                iconTextField: Icons.image_search_outlined,
+                iconTextField: Icons.search_outlined,
               ),
               CostomListTitles(
                 title: "Cadastrar Exercício",
                 actionOntap: () => {
+                  Navigator.pop(context),
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => SignupExercise()))
+                      MaterialPageRoute(builder: (_) => SignupExercisePage()))
                 },
                 iconTextField: Icons.book_outlined,
               ),
               CostomListTitles(
                 title: "Buscar Treino",
                 actionOntap: () => {
+                  Navigator.pop(context),
                   message.dialogBuilder(
                       context, "Mensagem", "Click Buscar Treino.")
                 },
-                iconTextField: Icons.image_search_outlined,
+                iconTextField: Icons.search_outlined,
               ),
               CostomListTitles(
                 title: "Cadastrar Treino",
                 actionOntap: () => {
+                  Navigator.pop(context),
                   Navigator.push(context,
                       MaterialPageRoute(builder: (_) => SignupTraining()))
                 },
@@ -88,22 +103,32 @@ class HomePersonPageState extends State<HomePersonPage> {
               CostomListTitles(
                 title: "Buscar Professor",
                 actionOntap: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => FindTeacherPage()))
+                  Navigator.pop(context),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => FindTeacherPage(
+                                token: widget.token,
+                              )))
                 },
-                iconTextField: Icons.image_search_outlined,
+                iconTextField: Icons.person_search_outlined,
               ),
               CostomListTitles(
                 title: "Cadastrar Professor",
                 actionOntap: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => SignupTeacherPage()))
+                  Navigator.pop(context),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>
+                              SignupTeacherPage(token: widget.token)))
                 },
                 iconTextField: Icons.book_outlined,
               ),
               CostomListTitles(
                 title: "Seu Perfil",
                 actionOntap: () => {
+                  Navigator.pop(context),
                   message.dialogBuilder(
                       context, "Mensagem", "Click Seu Perfil.")
                 },

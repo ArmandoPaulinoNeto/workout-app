@@ -3,7 +3,7 @@ import 'notice_entity.dart';
 
 class LoadingData {
   final Administrator administrator;
-  final Notice notice;
+  final Notice? notice;
   final int? count;
   LoadingData({required this.administrator, required this.notice, this.count});
 

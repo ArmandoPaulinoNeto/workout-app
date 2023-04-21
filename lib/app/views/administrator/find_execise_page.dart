@@ -5,47 +5,25 @@ import '../../component/costum_listview_separated.dart';
 import '../../component/costum_text_form_field.dart';
 import '../../util/costumPadding.dart';
 
-class FindTeacherPage extends StatefulWidget {
+class FindExercisePage extends StatefulWidget {
   String token;
-  FindTeacherPage({super.key, required this.token});
+  FindExercisePage({super.key, required this.token});
 
   @override
-  State<FindTeacherPage> createState() => _FindTeacherPageState();
+  State<FindExercisePage> createState() => _FindExercisePageState();
 }
 
-class _FindTeacherPageState extends State<FindTeacherPage> {
+class _FindExercisePageState extends State<FindExercisePage> {
   CostumPadding costumPadding = CostumPadding();
-  Message message = Message();
-  var teachers = [
-    "Amando Woler",
-    "Maquiavel",
-    "Jime Gliff",
-    "Emma Watson",
-    "Maquiavel",
-    "Jime Gliff",
-    "Emma Watson",
-    "Maquiavel",
-    "Jime Gliff",
-    "Emma Watson",
-    "Maquiavel",
-    "Jime Gliff",
-    "Emma Watson"
-  ];
 
-  var subTitleList = [
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: "
+  Message message = Message();
+  var exercises = [
+    "Puxada alta ",
+    "Remada fixa",
+    "Remada baixa",
+    "Remada unilateral",
+    "Voador invertido",
+    "Supino reto barra"
   ];
 
   String search = "";
@@ -56,7 +34,7 @@ class _FindTeacherPageState extends State<FindTeacherPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          title: Text('Buscar Professor'),
+          title: Text('Buscar Exercício'),
           actions: [
             changeTheme(),
           ],
@@ -106,8 +84,7 @@ class _FindTeacherPageState extends State<FindTeacherPage> {
                     width: double.infinity,
                     height: 240,
                     child: CostumListViewSeparated(
-                      itemList: teachers,
-                      subTitleItemList: subTitleList,
+                      itemList: exercises,
                     ),
                   ),
                 ],

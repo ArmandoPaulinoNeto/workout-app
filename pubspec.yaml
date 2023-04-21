@@ -39,6 +39,9 @@ dependencies:
   dio: ^5.0.1
   string_validator: ^1.0.0
   jwt_decoder: ^2.0.1
+  intl: ^0.18.0
+  image_picker: ^0.8.7+1
+  file_picker: ^5.2.7
 
 dev_dependencies:
   flutter_test:

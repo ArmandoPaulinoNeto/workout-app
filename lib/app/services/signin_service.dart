@@ -1,13 +1,13 @@
-import 'package:workout_app/app/repositories/user_repository.dart';
+import 'package:workout_app/app/repositories/signin_repository.dart';
 
 class SigninService {
-  UserRepository userRepository = UserRepository();
+  SigninRepository signinRepository = SigninRepository();
 
-  signinUser(String email, String password) {
-    return userRepository.signinAccessToken(email, password);
+  signinPerson(String email, String password) {
+    return signinRepository.signinAccessToken(email, password);
   }
 
   getDataHome(String token) {
-    return userRepository.getDataUser(token);
+    return signinRepository.getDataUser(token);
   }
 }

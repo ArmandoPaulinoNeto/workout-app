@@ -18,10 +18,23 @@ class _SignupTrainingState extends State<SignupTraining> {
   String repetition = "";
   String series = "";
   String observatios = "";
-  CostumPadding costumPadding = CostumPadding();
 
+  final List<String> exercisesList = <String>[
+    "Puxada alta ",
+    "Remada fixa",
+    "Remada baixa",
+    "Remada unilateral",
+    "Voador invertido",
+    "Supino reto barra"
+  ];
+  String? _selectedvalue = "";
+
+  CostumPadding costumPadding = CostumPadding();
   Message message = Message();
 
+  _SignupTrainingState() {
+    _selectedvalue = exercisesList[0];
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +54,7 @@ class _SignupTrainingState extends State<SignupTraining> {
                 children: [
                   CostomTextFormField(
                     label: "name:",
-                    iconTextField: Icons.person,
+                    iconTextField: Icons.abc_outlined,
                     obscureText: false,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -52,21 +65,34 @@ class _SignupTrainingState extends State<SignupTraining> {
                       }
                     },
                     onSaved: (value) => {name = value!},
+                    readOnly: false,
                   ),
                   costumPadding.padding(15),
-                  CostomTextFormField(
-                    label: "Exercício:",
-                    iconTextField: Icons.task_alt,
-                    obscureText: false,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "O campo execicio não pode ser vazio.";
-                      }
-                      if (value.length < 6) {
-                        return "Verifique se o execicio foi digitado corretamente.";
-                      }
+                  DropdownButtonFormField(
+                    value: _selectedvalue,
+                    items: exercisesList
+                        .map((e) => DropdownMenuItem(
+                              child: Text(e),
+                              value: e,
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedvalue = value as String;
+                      });
                     },
-                    onSaved: (value) => {exercise = value!},
+                    decoration: InputDecoration(
+                      labelText: "Exercícios:",
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      prefixIcon: Icon(Icons.assignment),
+                    ),
+                    onSaved: (value) {
+                      exercise = value!;
+                    },
                   ),
                   SizedBox(
                     width: double.infinity,
@@ -76,7 +102,7 @@ class _SignupTrainingState extends State<SignupTraining> {
                         spacing: 10,
                         children: [
                           Container(
-                            width: 130,
+                            width: 140,
                             child: CostomTextFormField(
                               label: "Repetições:",
                               iconTextField: Icons.task_alt,
@@ -90,6 +116,7 @@ class _SignupTrainingState extends State<SignupTraining> {
                                 }
                               },
                               onSaved: (value) => {repetition = value!},
+                              readOnly: false,
                             ),
                           ),
                           Container(
@@ -107,6 +134,7 @@ class _SignupTrainingState extends State<SignupTraining> {
                                 }
                               },
                               onSaved: (value) => {exercise = value!},
+                              readOnly: false,
                             ),
                           ),
                         ],
@@ -126,16 +154,21 @@ class _SignupTrainingState extends State<SignupTraining> {
                       }
                     },
                     onSaved: (value) => {observatios = value!},
+                    readOnly: false,
                   ),
                   SizedBox(
                     width: double.infinity,
-                    height: 100,
+                    height: 200,
                     child: Center(
                       child: Wrap(
                         spacing: 10,
                         children: [
                           Container(
                             child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 0, 100, 0)),
+                                ),
                                 onPressed: () {
                                   _keyForm.currentState!.reset();
                                 },
@@ -144,6 +177,10 @@ class _SignupTrainingState extends State<SignupTraining> {
                           ),
                           Container(
                             child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 0, 100, 0)),
+                                ),
                                 onPressed: () {
                                   if (_keyForm.currentState!.validate()) {
                                     _keyForm.currentState!.save();
@@ -166,22 +203,4 @@ class _SignupTrainingState extends State<SignupTraining> {
           ),
         ));
   }
-}
-
-listVeiwBuilder(var itemList) {
-  return ListView.separated(
-    itemBuilder: (BuildContext context, int index) {
-      return ListTile(
-        trailing: Container(
-          width: 48,
-          height: 48,
-          child: Image(image: AssetImage("assets/images/edit_file_icon.png")),
-        ),
-        title: Text(itemList[index]),
-        subtitle: Text("Ultimo traino: " + index.toString()),
-      );
-    },
-    separatorBuilder: (_, __) => Divider(),
-    itemCount: itemList.length,
-  );
 }
