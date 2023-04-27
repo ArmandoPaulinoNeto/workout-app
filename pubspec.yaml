@@ -69,10 +69,10 @@ flutter:
   assets:
     - assets/images/logo_forma.png
     - assets/images/logo_mais_forma.png
+    - assets/images/banner_exercise.png
     - assets/images/edit_file_icon.png
     - assets/images/delete.png
     - assets/images/membership.png
-  #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -3,11 +3,14 @@ import 'package:workout_app/app/util/dialog.util.dart';
 import 'package:workout_app/app/views/home_person_page.dart';
 import '../../component/costum_listview_separated.dart';
 import '../../component/costum_text_form_field.dart';
+import '../../entities/list_separated_item.dart';
 import '../../util/costumPadding.dart';
 
 class FindTeacherPage extends StatefulWidget {
   String token;
-  FindTeacherPage({super.key, required this.token});
+  Future<List<ListSeparatedItem>> listSeparetedItem;
+  FindTeacherPage(
+      {super.key, required this.token, required this.listSeparetedItem});
 
   @override
   State<FindTeacherPage> createState() => _FindTeacherPageState();
@@ -16,39 +19,15 @@ class FindTeacherPage extends StatefulWidget {
 class _FindTeacherPageState extends State<FindTeacherPage> {
   CostumPadding costumPadding = CostumPadding();
   Message message = Message();
-  var teachers = [
-    "Amando Woler",
-    "Maquiavel",
-    "Jime Gliff",
-    "Emma Watson",
-    "Maquiavel",
-    "Jime Gliff",
-    "Emma Watson",
-    "Maquiavel",
-    "Jime Gliff",
-    "Emma Watson",
-    "Maquiavel",
-    "Jime Gliff",
-    "Emma Watson"
-  ];
+  late List<ListSeparatedItem> fullListItem = List.empty();
+  List<ListSeparatedItem> _multablelistItem = List.empty();
 
-  var subTitleList = [
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: ",
-    "CREF: "
-  ];
-
-  String search = "";
+  @override
+  initState() {
+    widget.listSeparetedItem
+        .then((listTeacher) => _multablelistItem = listTeacher);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,48 +51,63 @@ class _FindTeacherPageState extends State<FindTeacherPage> {
                     iconTextField: Icons.person_search_rounded,
                     obscureText: false,
                     readOnly: false,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 80,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(150, 5, 0, 0),
-                            child: ElevatedButton.icon(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Color.fromARGB(255, 0, 100, 0)),
-                                ),
-                                onPressed: () async {},
-                                label: Text("Pesquisar"),
-                                icon: Icon(Icons.search)),
-                          ),
-                        ],
-                      ),
-                    ),
+                    onChanged: (value) => _runFilter(value),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, 160, 15),
+                    padding: EdgeInsets.fromLTRB(0, 30, 160, 15),
                     child: Text("Resultados:",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                             color: Color.fromARGB(255, 0, 100, 0))),
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 240,
-                    child: CostumListViewSeparated(
-                      itemList: teachers,
-                      subTitleItemList: subTitleList,
-                    ),
-                  ),
+                  FutureBuilder<List<ListSeparatedItem>>(
+                      future: widget.listSeparetedItem,
+                      builder: (context,
+                          AsyncSnapshot<List<ListSeparatedItem>> snapshot) {
+                        if (snapshot.hasData) {
+                          fullListItem = snapshot.data!;
+                          return SizedBox(
+                            width: double.infinity,
+                            height: 280,
+                            child: _multablelistItem.isNotEmpty
+                                ? CostumListViewSeparated(
+                                    listItem: _multablelistItem,
+                                  )
+                                : Container(
+                                    alignment: Alignment.topCenter,
+                                    child: Text("Nenhum resultado encontrado!",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                            color: Color.fromARGB(
+                                                255, 47, 79, 79))),
+                                  ),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }),
                 ],
               ),
             ),
           ),
         ));
+  }
+
+  _runFilter(String value) {
+    if (value.isNotEmpty) {
+      var foundTeacher = fullListItem
+          .where((teacher) =>
+              teacher.title.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+      setState(() {
+        _multablelistItem = foundTeacher;
+      });
+    } else {
+      setState(() {
+        _multablelistItem = fullListItem;
+      });
+    }
   }
 }

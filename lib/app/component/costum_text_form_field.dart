@@ -8,6 +8,7 @@ class CostomTextFormField extends StatelessWidget {
   final TextEditingController? inputController;
   final String? Function(String? text)? validator;
   final void Function(String? text)? onSaved;
+  final void Function(String text)? onChanged;
   final void Function()? onTap;
 
   const CostomTextFormField(
@@ -18,6 +19,7 @@ class CostomTextFormField extends StatelessWidget {
       this.validator,
       this.onSaved,
       this.onTap,
+      this.onChanged,
       required this.readOnly,
       this.inputController});
 
@@ -37,6 +39,7 @@ class CostomTextFormField extends StatelessWidget {
           prefixIcon: iconTextField != null ? Icon(iconTextField) : null),
       validator: validator,
       onSaved: onSaved,
+      onChanged: onChanged,
       onTap: onTap,
       readOnly: readOnly,
     );

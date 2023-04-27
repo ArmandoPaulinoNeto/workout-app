@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:workout_app/app/services/signup_administrator_service.dart';
 import 'package:workout_app/app/services/signup_service.dart';
 import 'package:workout_app/app/util/dialog.util.dart';
 import 'package:workout_app/app/views/home_person_page.dart';
@@ -205,6 +206,10 @@ class _SignupTeacherPageState extends State<SignupTeacherPage> {
                         children: [
                           Container(
                             child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 0, 100, 0)),
+                                ),
                                 onPressed: () {
                                   onReset();
                                 },
@@ -213,22 +218,28 @@ class _SignupTeacherPageState extends State<SignupTeacherPage> {
                           ),
                           Container(
                             child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 0, 100, 0)),
+                                ),
                                 onPressed: () async {
                                   if (_keyForm.currentState!.validate()) {
                                     _keyForm.currentState!.save();
-                                    SignupService signupService =
-                                        SignupService();
+                                    SignupAdministratorService
+                                        signupAdministratorService =
+                                        SignupAdministratorService();
                                     Teacher teacher =
-                                        await signupService.createTeacher(
-                                            cref,
-                                            name,
-                                            birthday,
-                                            sex,
-                                            photo,
-                                            email,
-                                            password,
-                                            "teacher",
-                                            widget.token);
+                                        await signupAdministratorService
+                                            .createTeacher(
+                                                cref,
+                                                name,
+                                                birthday,
+                                                sex,
+                                                photo,
+                                                email,
+                                                password,
+                                                "teacher",
+                                                widget.token);
                                     if (teacher.id != null &&
                                         teacher.id != "") {
                                       onReset();

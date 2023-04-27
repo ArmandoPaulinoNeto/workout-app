@@ -187,7 +187,7 @@ class _SignupPupilPageState extends State<SignupPupilPage> {
                   CostomTextFormField(
                     label: "Senha:",
                     iconTextField: Icons.lock,
-                    obscureText: true,
+                    obscureText: false,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "O campo senha não pode ser vazio.";
@@ -208,6 +208,10 @@ class _SignupPupilPageState extends State<SignupPupilPage> {
                         children: [
                           Container(
                             child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 0, 100, 0)),
+                                ),
                                 onPressed: () {
                                   onReset();
                                 },
@@ -216,6 +220,10 @@ class _SignupPupilPageState extends State<SignupPupilPage> {
                           ),
                           Container(
                             child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 0, 100, 0)),
+                                ),
                                 onPressed: () async {
                                   if (_keyForm.currentState!.validate()) {
                                     _keyForm.currentState!.save();

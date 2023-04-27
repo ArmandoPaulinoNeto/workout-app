@@ -2,18 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../entities/list_separated_item.dart';
+
 class CostumListViewSeparated extends StatelessWidget {
-  var itemList;
-  final List<String>? subTitleItemList;
+  List<ListSeparatedItem> listItem;
   final void Function()? onTapEdit;
   final void Function()? onTapDelete;
 
   CostumListViewSeparated(
-      {super.key,
-      required this.itemList,
-      this.subTitleItemList,
-      this.onTapEdit,
-      this.onTapDelete});
+      {super.key, required this.listItem, this.onTapEdit, this.onTapDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +32,7 @@ class CostumListViewSeparated extends StatelessWidget {
                           Icons.edit_note_outlined,
                           color: Colors.white,
                         ),
-                        onPressed: () {
-                          print("edit: " + itemList[index]);
-                        },
+                        onPressed: () {},
                       ),
                     )),
               ),
@@ -61,30 +56,21 @@ class CostumListViewSeparated extends StatelessWidget {
             ],
           ),
           title: Text(
-            itemList[index],
+            listItem[index].title,
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color.fromARGB(255, 0, 100, 0)),
           ),
-          subtitle: subTitleItemList != null
+          subtitle: listItem[index].subTitle != null
               ? Text(
-                  subTitleItemList![index] + randomNumbers(10),
+                  listItem[index].subTitle ?? "",
                   style: TextStyle(color: Color.fromARGB(255, 47, 79, 79)),
                 )
               : null,
         );
       },
       separatorBuilder: (_, __) => Divider(),
-      itemCount: itemList.length,
+      itemCount: listItem.length,
     );
-  }
-
-  randomNumbers(int n) {
-    Random random = new Random();
-    String randomNumber = "";
-    for (var i = 0; i < n; i++) {
-      randomNumber += random.nextInt(10).toString();
-    }
-    return randomNumber;
   }
 }

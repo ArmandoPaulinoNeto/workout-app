@@ -3,11 +3,14 @@ import 'package:workout_app/app/util/dialog.util.dart';
 import 'package:workout_app/app/views/home_person_page.dart';
 import '../../component/costum_listview_separated.dart';
 import '../../component/costum_text_form_field.dart';
+import '../../entities/list_separated_item.dart';
 import '../../util/costumPadding.dart';
 
 class FindExercisePage extends StatefulWidget {
   String token;
-  FindExercisePage({super.key, required this.token});
+  Future<List<ListSeparatedItem>> listSeparetedItem;
+  FindExercisePage(
+      {super.key, required this.token, required this.listSeparetedItem});
 
   @override
   State<FindExercisePage> createState() => _FindExercisePageState();
@@ -17,16 +20,16 @@ class _FindExercisePageState extends State<FindExercisePage> {
   CostumPadding costumPadding = CostumPadding();
 
   Message message = Message();
-  var exercises = [
-    "Puxada alta ",
-    "Remada fixa",
-    "Remada baixa",
-    "Remada unilateral",
-    "Voador invertido",
-    "Supino reto barra"
-  ];
 
-  String search = "";
+  late List<ListSeparatedItem> fullListItem = List.empty();
+  List<ListSeparatedItem> _multablelistItem = List.empty();
+
+  @override
+  void initState() {
+    widget.listSeparetedItem
+        .then((listExercise) => _multablelistItem = listExercise);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,47 +53,64 @@ class _FindExercisePageState extends State<FindExercisePage> {
                     iconTextField: Icons.person_search_rounded,
                     obscureText: false,
                     readOnly: false,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 80,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(150, 5, 0, 0),
-                            child: ElevatedButton.icon(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Color.fromARGB(255, 0, 100, 0)),
-                                ),
-                                onPressed: () async {},
-                                label: Text("Pesquisar"),
-                                icon: Icon(Icons.search)),
-                          ),
-                        ],
-                      ),
-                    ),
+                    onChanged: (value) => _runFilter(value),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, 160, 15),
+                    padding: EdgeInsets.fromLTRB(0, 30, 160, 15),
                     child: Text("Resultados:",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                             color: Color.fromARGB(255, 0, 100, 0))),
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 240,
-                    child: CostumListViewSeparated(
-                      itemList: exercises,
-                    ),
-                  ),
+                  FutureBuilder<List<ListSeparatedItem>>(
+                      future: widget.listSeparetedItem,
+                      builder: (context,
+                          AsyncSnapshot<List<ListSeparatedItem>> snapshot) {
+                        if (snapshot.hasData) {
+                          fullListItem = snapshot.data!;
+                          print("Concluiu a fuction FutureBuilder.");
+                          return SizedBox(
+                            width: double.infinity,
+                            height: 280,
+                            child: _multablelistItem.isNotEmpty
+                                ? CostumListViewSeparated(
+                                    listItem: _multablelistItem,
+                                  )
+                                : Container(
+                                    alignment: Alignment.topCenter,
+                                    child: Text("Nenhum resultado encontrado!",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                            color: Color.fromARGB(
+                                                255, 47, 79, 79))),
+                                  ),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }),
                 ],
               ),
             ),
           ),
         ));
+  }
+
+  _runFilter(String value) {
+    if (value.isNotEmpty) {
+      var foundTeacher = fullListItem
+          .where((teacher) =>
+              teacher.title.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+      setState(() {
+        _multablelistItem = foundTeacher;
+      });
+    } else {
+      setState(() {
+        _multablelistItem = fullListItem;
+      });
+    }
   }
 }

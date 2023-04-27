@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:workout_app/app/services/signup_administrator_service.dart';
 import 'package:workout_app/app/util/dialog.util.dart';
 import 'package:workout_app/app/views/home_person_page.dart';
 import '../../component/costum_text_form_field.dart';
+import '../../entities/exercise_entity.dart';
 import '../../util/costumPadding.dart';
 
 class SignupExercisePage extends StatefulWidget {
-  const SignupExercisePage({super.key});
+  String token;
+  SignupExercisePage({super.key, required this.token});
 
   @override
   State<SignupExercisePage> createState() => _SignupExercisePageState();
@@ -15,7 +18,6 @@ class _SignupExercisePageState extends State<SignupExercisePage> {
   CostumPadding costumPadding = CostumPadding();
   Message message = Message();
   final _keyForm = GlobalKey<FormState>();
-  late String name;
   final List<String> muscleGroupList = <String>[
     "Peito",
     "Costas",
@@ -24,13 +26,12 @@ class _SignupExercisePageState extends State<SignupExercisePage> {
     "Perna"
   ];
   String? _selectedvalue = "";
+  late String name;
+  late String muscleGroup;
 
   _SignupExercisePageState() {
     _selectedvalue = muscleGroupList[0];
   }
-
-  String nameExercise = "";
-  String muscleGroup = "";
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +50,20 @@ class _SignupExercisePageState extends State<SignupExercisePage> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    child: Container(
+                      width: double.infinity,
+                      height: 190,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage(
+                                  "assets/images/banner_exercise.png"))),
+                    ),
+                  ),
+                  costumPadding.padding(15),
                   CostomTextFormField(
                     label: "name:",
                     iconTextField: Icons.abc_outlined,
@@ -93,13 +108,17 @@ class _SignupExercisePageState extends State<SignupExercisePage> {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    height: 450,
+                    height: 100,
                     child: Center(
                       child: Wrap(
                         spacing: 10,
                         children: [
                           Container(
                             child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 0, 100, 0)),
+                                ),
                                 onPressed: () {
                                   _keyForm.currentState!.reset();
                                 },
@@ -108,7 +127,30 @@ class _SignupExercisePageState extends State<SignupExercisePage> {
                           ),
                           Container(
                             child: ElevatedButton.icon(
-                                onPressed: () async {},
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Color.fromARGB(255, 0, 100, 0)),
+                                ),
+                                onPressed: () async {
+                                  if (_keyForm.currentState!.validate()) {
+                                    _keyForm.currentState!.save();
+                                    SignupAdministratorService
+                                        administratorService =
+                                        SignupAdministratorService();
+
+                                    Exercise exercise =
+                                        await administratorService
+                                            .createExecise(name, muscleGroup,
+                                                widget.token);
+                                    if (exercise.id != null) {
+                                      message.dialogBuilder(context, "Alerta",
+                                          """Exercício salvo com sucesso!""");
+                                    } else {
+                                      message.dialogBuilder(context, "Alerta",
+                                          """Erro ao tenta salvar o execício!""");
+                                    }
+                                  }
+                                },
                                 label: Text("Cadastrar"),
                                 icon: Icon(Icons.save)),
                           ),

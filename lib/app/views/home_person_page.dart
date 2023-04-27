@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:workout_app/app/entities/list_separated_item.dart';
+import 'package:workout_app/app/entities/loading_data_teacher.dart';
+import 'package:workout_app/app/services/administrator_service.dart';
 import 'package:workout_app/app/views/administrator/signup_teacher_page.dart';
 import 'package:workout_app/app/views/pupil/find_pupil_page.dart';
 import 'package:workout_app/app/views/pupil/signup_pupil_page.dart';
@@ -6,6 +9,9 @@ import 'package:workout_app/app/views/training/signup_training.dart';
 import '../component/costum_list_titles.dart';
 import '../controlles/app_controller.dart';
 import '../entities/loading_data_entity.dart';
+import '../entities/loading_data_exercise.dart';
+import '../entities/loading_data_pupil.dart';
+import '../services/pupil_service.dart';
 import '../util/dialog.util.dart';
 import 'administrator/find_execise_page.dart';
 import 'administrator/find_teacher_page.dart';
@@ -43,6 +49,7 @@ class HomePersonPageState extends State<HomePersonPage> {
                       MaterialPageRoute(
                           builder: (_) => FindPupilPage(
                                 token: widget.token,
+                                listSeparetedItem: fetchAllPupil(widget.token),
                               )))
                 },
                 iconTextField: Icons.person_search_outlined,
@@ -69,6 +76,8 @@ class HomePersonPageState extends State<HomePersonPage> {
                       MaterialPageRoute(
                           builder: (_) => FindExercisePage(
                                 token: widget.token,
+                                listSeparetedItem:
+                                    fetchAllExercise(widget.token),
                               )))
                 },
                 iconTextField: Icons.search_outlined,
@@ -77,8 +86,12 @@ class HomePersonPageState extends State<HomePersonPage> {
                 title: "Cadastrar Exercício",
                 actionOntap: () => {
                   Navigator.pop(context),
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => SignupExercisePage()))
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => SignupExercisePage(
+                                token: widget.token,
+                              )))
                 },
                 iconTextField: Icons.book_outlined,
               ),
@@ -109,6 +122,8 @@ class HomePersonPageState extends State<HomePersonPage> {
                       MaterialPageRoute(
                           builder: (_) => FindTeacherPage(
                                 token: widget.token,
+                                listSeparetedItem:
+                                    fetchAllTeacher(widget.token),
                               )))
                 },
                 iconTextField: Icons.person_search_outlined,
@@ -215,6 +230,44 @@ class HomePersonPageState extends State<HomePersonPage> {
       ),
     );
   }
+}
+
+Future<List<ListSeparatedItem>> fetchAllTeacher(String token) async {
+  AdministratorService administratorService = AdministratorService();
+
+  List<LoadingDataTeacher> listDataTeacher =
+      await administratorService.fetchAllTeacher(token);
+  List<ListSeparatedItem> listSeparatedItem = List.empty(growable: true);
+  for (var it in listDataTeacher) {
+    listSeparatedItem.add(ListSeparatedItem.fromJson(it.id, it.name, it.cref));
+  }
+  return listSeparatedItem;
+}
+
+Future<List<ListSeparatedItem>> fetchAllPupil(String token) async {
+  PupilService pupilService = PupilService();
+
+  List<LoadingDataPupil> listDataPupil =
+      await pupilService.fetchAllPupil(token);
+  List<ListSeparatedItem> listSeparatedItem = List.empty(growable: true);
+  for (var it in listDataPupil) {
+    listSeparatedItem
+        .add(ListSeparatedItem.fromJson(it.id, it.name, it.lastTraining));
+  }
+  return listSeparatedItem;
+}
+
+Future<List<ListSeparatedItem>> fetchAllExercise(String token) async {
+  AdministratorService administratorService = AdministratorService();
+
+  List<LoadingDataExercise> listDataExercise =
+      await administratorService.fetchAllExercise(token);
+  List<ListSeparatedItem> listSeparatedItem = List.empty(growable: true);
+  for (var it in listDataExercise) {
+    listSeparatedItem
+        .add(ListSeparatedItem.fromJson(it.id, it.name, it.muscleGroup));
+  }
+  return listSeparatedItem;
 }
 
 class changeTheme extends StatelessWidget {
