@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:workout_app/app/entities/access_token_entity.dart';
 import 'package:workout_app/app/util/dialog.util.dart';
 import 'package:workout_app/app/views/home_person_page.dart';
+import 'package:workout_app/app/views/pupil/pageview_pupil_page.dart';
 import '../component/costum_text_form_field.dart';
-import 'package:string_validator/string_validator.dart' as stringValidator;
-import '../entities/loading_data_entity.dart';
+import 'package:string_validator/string_validator.dart' as string_validator;
+import '../controlles/app_controller.dart';
+import '../entities/person_logged.dart';
+import '../services/pupil_service.dart';
 import '../services/signin_service.dart';
 import '../util/costumPadding.dart';
 
@@ -62,7 +66,7 @@ class _SigninPageState extends State<SigninPage> {
                       if (value == null || value.isEmpty) {
                         return "O campo email está vazio.";
                       }
-                      if (!stringValidator.isEmail(value)) {
+                      if (!string_validator.isEmail(value)) {
                         return "Verifique se email foi digitado corretamente.";
                       }
                     },
@@ -112,20 +116,37 @@ class _SigninPageState extends State<SigninPage> {
                               onPressed: () async {
                                 if (_keyForm.currentState!.validate()) {
                                   _keyForm.currentState!.save();
-                                  var response = await signinService
+                                  AccessToken accessToken = await signinService
                                       .signinPerson(email, password);
-                                  AccessToken accessToken = response;
-                                  if (accessToken.token.length > 100) {
-                                    LoadingData loadingData =
-                                        await signinService
-                                            .getDataHome(accessToken.token);
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => HomePersonPage(
-                                                  token: accessToken.token,
-                                                  loadingData: loadingData,
-                                                )));
+                                  if (accessToken.token != null ||
+                                      accessToken.token.length > 100) {
+                                    PersonLogged personLogged =
+                                        PersonLogged(token: accessToken.token);
+                                    if (personLogged.role!
+                                        .contains("administrator")) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => HomePersonPage(
+                                                  token: accessToken.token)));
+                                    }
+                                    if (personLogged.role!
+                                        .contains("teacher")) {}
+                                    if (personLogged.role!.contains("pupil")) {
+                                      print(
+                                          "${personLogged.personId!}\n${personLogged.token}");
+                                      PupilService pupilService =
+                                          PupilService();
+                                      personLogged.pupil =
+                                          await pupilService.findById(
+                                              personLogged.personId!,
+                                              personLogged.token);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => PageviewPupil(
+                                                  pupilLogged: personLogged)));
+                                    }
                                     _keyForm.currentState!.reset();
                                   } else {
                                     message.dialogBuilder(context, "Alerta",
@@ -144,5 +165,17 @@ class _SigninPageState extends State<SigninPage> {
             ),
           ),
         ));
+  }
+}
+
+class changeTheme extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Switch(
+      value: AppController.instance.isDarkTheme,
+      onChanged: (value) {
+        AppController.instance.changeTheme();
+      },
+    );
   }
 }

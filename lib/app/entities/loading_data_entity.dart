@@ -3,14 +3,20 @@ import 'notice_entity.dart';
 
 class LoadingData {
   final Administrator administrator;
+  final int? nPupils;
+  final int? nTeachers;
   final Notice? notice;
-  final int? count;
-  LoadingData({required this.administrator, required this.notice, this.count});
+  LoadingData(
+      {required this.administrator,
+      required this.notice,
+      this.nPupils,
+      this.nTeachers});
 
   factory LoadingData.fromJson(Map<String, dynamic> json) {
     return LoadingData(
         administrator: Administrator.fromJson(json['administrator']),
         notice: Notice.fromJson(json['notice']),
-        count: json['count']);
+        nPupils: json['nPupils'],
+        nTeachers: json['nTeachers']);
   }
 }

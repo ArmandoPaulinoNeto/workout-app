@@ -1,44 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:workout_app/app/services/signup_administrator_service.dart';
 import 'package:workout_app/app/util/dialog.util.dart';
 import 'package:workout_app/app/views/home_person_page.dart';
 import '../../component/costum_text_form_field.dart';
-import '../../entities/exercise_entity.dart';
+import '../../entities/training_entity.dart';
+import '../../services/signup_service.dart';
 import '../../util/costumPadding.dart';
 
-class SignupExercisePage extends StatefulWidget {
+class SignupTrainingPage extends StatefulWidget {
   String token;
-  SignupExercisePage({super.key, required this.token});
+  SignupTrainingPage({super.key, required this.token});
 
   @override
-  State<SignupExercisePage> createState() => _SignupExercisePageState();
+  State<SignupTrainingPage> createState() => _SignupTrainingPageState();
 }
 
-class _SignupExercisePageState extends State<SignupExercisePage> {
+class _SignupTrainingPageState extends State<SignupTrainingPage> {
   CostumPadding costumPadding = CostumPadding();
   Message message = Message();
   final _keyForm = GlobalKey<FormState>();
-  final List<String> muscleGroupList = <String>[
-    "COSTAS",
-    "PEITO",
-    "OMBRO",
-    "BÍCEPS",
-    "TRÍCEPS",
-    "PERNA"
-  ];
-  String? _selectedvalue = "";
   late String name;
-  late String muscleGroup;
 
-  _SignupExercisePageState() {
-    _selectedvalue = muscleGroupList[0];
-  }
+  _SignupTrainingPageState() {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Cad. exercício'),
+          title: Text('Cadastro de Traino'),
           actions: [
             changeTheme(),
           ],
@@ -80,33 +68,6 @@ class _SignupExercisePageState extends State<SignupExercisePage> {
                     onSaved: (value) => {name = value!},
                     readOnly: false,
                   ),
-                  costumPadding.padding(15),
-                  DropdownButtonFormField(
-                    value: _selectedvalue,
-                    items: muscleGroupList
-                        .map((e) => DropdownMenuItem(
-                              child: Text(e),
-                              value: e,
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedvalue = value as String;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Grupo Muscular:",
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
-                      prefixIcon: Icon(Icons.assignment),
-                    ),
-                    onSaved: (value) {
-                      muscleGroup = value!;
-                    },
-                  ),
                   SizedBox(
                     width: double.infinity,
                     height: 100,
@@ -135,20 +96,18 @@ class _SignupExercisePageState extends State<SignupExercisePage> {
                                 onPressed: () async {
                                   if (_keyForm.currentState!.validate()) {
                                     _keyForm.currentState!.save();
-                                    SignupAdministratorService
-                                        administratorService =
-                                        SignupAdministratorService();
 
-                                    Exercise exercise =
-                                        await administratorService
-                                            .createExecise(name, muscleGroup,
-                                                widget.token);
-                                    if (exercise.id != null) {
+                                    SignupService signupService =
+                                        SignupService();
+                                    Training training = await signupService
+                                        .createTraining(name, widget.token);
+                                    if (training.id != null &&
+                                        training.id != "") {
                                       message.dialogBuilder(context, "Alerta",
-                                          """Exercício salvo com sucesso!""");
+                                          "Os dados do traino foram salvos corretamente!");
                                     } else {
                                       message.dialogBuilder(context, "Alerta",
-                                          """Erro ao tenta salvar o execício!""");
+                                          "Erro ao salvar os dados do treino!");
                                     }
                                   }
                                 },

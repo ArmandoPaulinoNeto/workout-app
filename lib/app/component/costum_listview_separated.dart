@@ -6,11 +6,18 @@ import '../entities/list_separated_item.dart';
 
 class CostumListViewSeparated extends StatelessWidget {
   List<ListSeparatedItem> listItem;
+  final IconData? iconTextField;
+  final void Function()? onTapAdd;
   final void Function()? onTapEdit;
   final void Function()? onTapDelete;
 
   CostumListViewSeparated(
-      {super.key, required this.listItem, this.onTapEdit, this.onTapDelete});
+      {super.key,
+      required this.listItem,
+      this.iconTextField,
+      this.onTapAdd,
+      this.onTapEdit,
+      this.onTapDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +36,12 @@ class CostumListViewSeparated extends StatelessWidget {
                     child: Center(
                       child: IconButton(
                         icon: Icon(
-                          Icons.edit_note_outlined,
+                          iconTextField,
                           color: Colors.white,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          onTapAdd != null ? onTapAdd : onTapEdit;
+                        },
                       ),
                     )),
               ),

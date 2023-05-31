@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_app/app/entities/training_entity.dart';
 import 'package:workout_app/app/util/dialog.util.dart';
 import 'package:workout_app/app/views/home_person_page.dart';
 import '../../component/costum_listview_separated.dart';
@@ -6,26 +7,33 @@ import '../../component/costum_text_form_field.dart';
 import '../../entities/list_separated_item.dart';
 import '../../util/costumPadding.dart';
 
-class FindTeacherPage extends StatefulWidget {
+class FindTrainingPage extends StatefulWidget {
   String token;
-  Future<List<ListSeparatedItem>> listSeparetedItem;
-  FindTeacherPage(
-      {super.key, required this.token, required this.listSeparetedItem});
+  Future<List<Training>> listTrainingItem;
+  FindTrainingPage(
+      {super.key, required this.token, required this.listTrainingItem});
 
   @override
-  State<FindTeacherPage> createState() => _FindTeacherPageState();
+  State<FindTrainingPage> createState() => _FindTrainingPageState();
 }
 
-class _FindTeacherPageState extends State<FindTeacherPage> {
+class _FindTrainingPageState extends State<FindTrainingPage> {
   CostumPadding costumPadding = CostumPadding();
+
   Message message = Message();
-  late List<ListSeparatedItem> fullListItem = List.empty();
-  List<ListSeparatedItem> _multablelistItem = List.empty();
+
+  late List<ListSeparatedItem> fullListItem = List.empty(growable: true);
+  List<ListSeparatedItem> _multablelistItem = List.empty(growable: true);
 
   @override
-  initState() {
-    widget.listSeparetedItem
-        .then((listTeacher) => _multablelistItem = listTeacher);
+  void initState() {
+    widget.listTrainingItem.then((listTraining) => {
+          listTraining.forEach((it) {
+            _multablelistItem.add(
+                ListSeparatedItem.fromJson(it.id, it.name, null, null, null));
+          }),
+          fullListItem = _multablelistItem
+        });
     super.initState();
   }
 
@@ -35,7 +43,7 @@ class _FindTeacherPageState extends State<FindTeacherPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          title: Text('Buscar Professor'),
+          title: Text('Buscar Treino'),
           actions: [
             changeTheme(),
           ],
@@ -61,12 +69,11 @@ class _FindTeacherPageState extends State<FindTeacherPage> {
                             fontSize: 20,
                             color: Color.fromARGB(255, 0, 100, 0))),
                   ),
-                  FutureBuilder<List<ListSeparatedItem>>(
-                      future: widget.listSeparetedItem,
-                      builder: (context,
-                          AsyncSnapshot<List<ListSeparatedItem>> snapshot) {
+                  FutureBuilder<List<Training>>(
+                      future: widget.listTrainingItem,
+                      builder:
+                          (context, AsyncSnapshot<List<Training>> snapshot) {
                         if (snapshot.hasData) {
-                          fullListItem = snapshot.data!;
                           return SizedBox(
                             width: double.infinity,
                             height: 280,
@@ -98,12 +105,12 @@ class _FindTeacherPageState extends State<FindTeacherPage> {
 
   _runFilter(String value) {
     if (value.isNotEmpty) {
-      var foundTeacher = fullListItem
-          .where((teacher) =>
-              teacher.title.toLowerCase().contains(value.toLowerCase()))
+      var foundTraining = fullListItem
+          .where((training) =>
+              training.title.toLowerCase().contains(value.toLowerCase()))
           .toList();
       setState(() {
-        _multablelistItem = foundTeacher;
+        _multablelistItem = foundTraining;
       });
     } else {
       setState(() {

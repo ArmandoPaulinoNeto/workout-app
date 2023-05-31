@@ -1,8 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:workout_app/app/services/signup_administrator_service.dart';
-import 'package:workout_app/app/services/signup_service.dart';
 import 'package:workout_app/app/util/dialog.util.dart';
 import 'package:workout_app/app/views/home_person_page.dart';
 import '../../component/costum_text_form_field.dart';
@@ -10,6 +11,7 @@ import 'package:string_validator/string_validator.dart' as string_validator;
 import '../../entities/teacher_entity.dart';
 import '../../util/convert-base64.dart';
 import '../../util/costumPadding.dart';
+import '../../util/edit_image.dart';
 
 class SignupTeacherPage extends StatefulWidget {
   String token;
@@ -31,7 +33,7 @@ class _SignupTeacherPageState extends State<SignupTeacherPage> {
   late String sex;
   final List<String> sexList = <String>["Masculino", "Feminino"];
   late String cref;
-  late String photo;
+  Uint8List? bytes;
   XFile? filePhoto;
   String? _selectedvalue = "";
   late String email;
@@ -158,10 +160,6 @@ class _SignupTeacherPageState extends State<SignupTeacherPage> {
                         return "O campo foto não pode ser vazio.";
                       }
                     },
-                    onSaved: (value) {
-                      ConvertBase64 convertToBase64 = ConvertBase64();
-                      photo = convertToBase64.convertToBase64(filePhoto!.path);
-                    },
                     readOnly: false,
                     onTap: selectPhoto,
                   ),
@@ -235,7 +233,8 @@ class _SignupTeacherPageState extends State<SignupTeacherPage> {
                                                 name,
                                                 birthday,
                                                 sex,
-                                                photo,
+                                                ConvertBase64()
+                                                    .convertToBase64(bytes!),
                                                 email,
                                                 password,
                                                 "teacher",
@@ -269,6 +268,7 @@ class _SignupTeacherPageState extends State<SignupTeacherPage> {
     setState(() {
       filePhoto = null;
       dateController.text = "";
+      _selectedvalue = sexList[0];
     });
     _keyForm.currentState!.reset();
   }
@@ -278,6 +278,9 @@ class _SignupTeacherPageState extends State<SignupTeacherPage> {
     try {
       XFile? xFile = await imagePicker.pickImage(source: ImageSource.gallery);
       if (xFile != null) {
+        EditImage()
+            .ReduceImageQualityAndSize(xFile.path)
+            .then((value) => {bytes = value});
         setState(() {
           filePhoto = xFile;
         });

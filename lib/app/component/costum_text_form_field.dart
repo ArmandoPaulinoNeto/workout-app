@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../util/currencyFormatter.dart';
 
 class CostomTextFormField extends StatelessWidget {
   final String label;
   final IconData? iconTextField;
   final bool obscureText;
+  final TextInputType? keyboardType;
   final bool readOnly;
   final TextEditingController? inputController;
+  final List<TextInputFormatter>? inputTextNumber;
   final String? Function(String? text)? validator;
   final void Function(String? text)? onSaved;
   final void Function(String text)? onChanged;
@@ -16,19 +21,23 @@ class CostomTextFormField extends StatelessWidget {
       required this.label,
       this.iconTextField,
       required this.obscureText,
+      this.keyboardType,
       this.validator,
       this.onSaved,
       this.onTap,
       this.onChanged,
       required this.readOnly,
-      this.inputController});
+      this.inputController,
+      this.inputTextNumber});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: inputController != null ? inputController : null,
+      inputFormatters: inputTextNumber,
       obscureText: obscureText,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(

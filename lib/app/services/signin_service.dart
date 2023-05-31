@@ -7,7 +7,11 @@ class SigninService {
     return signinRepository.signinAccessToken(email, password);
   }
 
-  getDataHome(String token) {
-    return signinRepository.getDataUser(token);
+  getDataHomeAdministrator(String token) {
+    return signinRepository.getDataAdministrator(token);
+  }
+
+  getDataHomePupil(String token) {
+    return signinRepository.getDataHomePupil(token);
   }
 }

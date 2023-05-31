@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:workout_app/app/entities/teacher_entity.dart';
 
+import '../entities/assessment_entity.dart';
 import '../entities/exercise_entity.dart';
 import '../entities/loading_data_exercise.dart';
 import '../entities/loading_data_teacher.dart';
 
 class AdministratorRepository {
   //192.168.20.242 - 172.17.0.1
-  var baseUrl = 'http://172.17.0.1:3000/';
+  var baseUrl = 'http://172.17.0.1:3001/';
 
   Future<Teacher> saveTeacher(
       Map<String, dynamic> dataTeacher, String token) async {
@@ -83,6 +84,23 @@ class AdministratorRepository {
       throw Exception("Acesso não autorizado!");
     } else {
       throw Exception('Ocorreu uma falha ao carregar dados do exercício!');
+    }
+  }
+
+  Future<String> saveAssessment(var dataAssessment, String token) async {
+    Map<String, String> headers = {'Authorization': 'Bearer $token'};
+    final response = await http.post(
+        Uri.parse('${baseUrl}administrator/signup/assessment'),
+        headers: headers,
+        body: dataAssessment);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    if (response.statusCode == 401) {
+      throw Exception("Acesso não autorizado!");
+    } else {
+      throw Exception('Ocorreu uma falha ao salva os dados do Professor!');
     }
   }
 }

@@ -1,21 +1,17 @@
-class LoadingDataPupil {
-  String? id;
-  String? name;
-  String? lastTraining;
+import 'package:workout_app/app/entities/pupil_entity.dart';
 
-  LoadingDataPupil({this.id, this.lastTraining, this.name});
+class LoadingDataPupil {
+  Pupil? pupil;
+
+  LoadingDataPupil({this.pupil});
 
   LoadingDataPupil.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    lastTraining = json['last_training'];
+    pupil = Pupil.fromJson(json['pupil']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['last_training'] = this.lastTraining;
+    data['pupil'] = this.pupil;
     return data;
   }
 }

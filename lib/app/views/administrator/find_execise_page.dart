@@ -69,12 +69,12 @@ class _FindExercisePageState extends State<FindExercisePage> {
                           AsyncSnapshot<List<ListSeparatedItem>> snapshot) {
                         if (snapshot.hasData) {
                           fullListItem = snapshot.data!;
-                          print("Concluiu a fuction FutureBuilder.");
                           return SizedBox(
                             width: double.infinity,
                             height: 280,
                             child: _multablelistItem.isNotEmpty
                                 ? CostumListViewSeparated(
+                                    iconTextField: Icons.edit_note_outlined,
                                     listItem: _multablelistItem,
                                   )
                                 : Container(
