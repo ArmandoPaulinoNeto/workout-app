@@ -1,16 +1,11 @@
-# workout_app
+## Workout-app.
 
-A new Flutter project.
+App availability a systems to management pupils and teachers in gyms, where pupils can control them evolution, receive personality work out and there is a personality avalietion with base in 5 dobras method. Besides, the teachers can booking exercices for your pupils and visualize them execution.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### :computer: Tecnology used:
+<br/>
+<code><img width="10%" src="https://www.vectorlogo.zone/logos/nestjs/nestjs-ar21.svg">&nbsp;&nbsp;<img width="10%" src="https://www.vectorlogo.zone/logos/typescriptlang/typescriptlang-ar21.svg">&nbsp;&nbsp;<img width="10%" src="https://www.vectorlogo.zone/logos/postgresql/postgresql-ar21.svg"></code>
+<br/>
+<br/>
+<code><img width="10%" src="https://www.vectorlogo.zone/logos/visualstudio_code/visualstudio_code-ar21.svg">&nbsp;&nbsp;<img width="10%" src="https://www.vectorlogo.zone/logos/docker/docker-ar21.svg">&nbsp;&nbsp;<img width="10%" src="https://www.vectorlogo.zone/logos/nodejs/nodejs-ar21.svg">&nbsp;&nbsp;<img width="10%" src="https://www.vectorlogo.zone/logos/json/json-ar21.svg"></code>
+<br/>
